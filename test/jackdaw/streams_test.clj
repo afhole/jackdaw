@@ -67,7 +67,7 @@
                                               (let [left (k/kstream builder topic-a)
                                                     right (k/ktable builder topic-b)]
                                                 (-> (k/join left right +)
-                                                    (k/to topic-c)))))]
+                                                    (k/to! topic-c)))))]
         (let [publish-left (partial mock/publish driver topic-a)
               publish-right (partial mock/publish driver topic-b)]
 
@@ -93,7 +93,7 @@
       (with-open [driver (mock/build-driver (fn [builder]
                                               (let [left (k/kstream builder topic-a)
                                                     right (k/ktable builder topic-b)]
-                                                (k/to (k/left-join left right safe-add) topic-c))))]
+                                                (k/to! (k/left-join left right safe-add) topic-c))))]
         (let [publish-left (partial mock/publish driver topic-a)
               publish-right (partial mock/publish driver topic-b)]
 
@@ -113,7 +113,7 @@
       (with-open [driver (mock/build-driver (fn [builder]
                                               (let [left (k/kstream builder topic-a)
                                                     right (k/ktable builder topic-b)]
-                                                (k/to (k/left-join left right safe-add topic-a topic-b) topic-c))))]
+                                                (k/to! (k/left-join left right safe-add topic-a topic-b) topic-c))))]
         (let [publish-left (partial mock/publish driver topic-a)
               publish-right (partial mock/publish driver topic-b)]
 
@@ -147,7 +147,7 @@
                                       (-> builder
                                           (k/kstream topic-a)
                                           (k/filter (fn [[_k v]] (> v 1)))
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1 1)
@@ -162,7 +162,7 @@
                                       (-> builder
                                           (k/kstream topic-a)
                                           (k/filter-not (fn [[_k v]] (> v 1)))
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1 1)
@@ -177,7 +177,7 @@
                                       (-> builder
                                           (k/kstream topic-a)
                                           (k/map-values inc)
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1 1)
@@ -195,7 +195,7 @@
                                       (-> builder
                                           (k/kstream topic-a)
                                           (k/peek (fn [[_ x]] (swap! sentinel conj x)))
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1 1)
@@ -233,7 +233,7 @@
                                         (-> builder
                                             (k/kstream topic-a)
                                             (k/through topic-b)
-                                            (k/to topic-c))))
+                                            (k/to! topic-c))))
             publish (partial mock/publish driver topic-a)]
 
         (publish 1 1)
@@ -247,7 +247,7 @@
           driver (mock/build-driver (fn [builder]
                                       (-> builder
                                           (k/kstream topic-a)
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1 1)
@@ -264,8 +264,8 @@
                                                                         (k/branch [(fn [[_k v]]
                                                                                      (<= 0 v))
                                                                                    (constantly true)]))]
-                                        (k/to pos-stream topic-pos)
-                                        (k/to neg-stream topic-neg))))
+                                        (k/to! pos-stream topic-pos)
+                                        (k/to! neg-stream topic-neg))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1 1)
@@ -283,7 +283,7 @@
                                           (k/flat-map (fn [[k v]]
                                                         [[k v]
                                                          [k 0]]))
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1 1)
@@ -300,7 +300,7 @@
                                           (k/kstream topic-a)
                                           (k/flat-map-values (fn [v]
                                                                [v (inc v)]))
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1 1)
@@ -323,7 +323,7 @@
                                                              windows
                                                              topic-a
                                                              topic-b)
-                                            (k/to topic-c)))))
+                                            (k/to! topic-c)))))
           publish-a (partial mock/publish driver topic-a)
           publish-b (partial mock/publish driver topic-b)]
 
@@ -340,7 +340,7 @@
                                           (k/kstream topic-a)
                                           (k/map (fn [[k v]]
                                                    [(inc k) (inc v)]))
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1 1)
@@ -355,7 +355,7 @@
                                       (-> builder
                                           (k/kstream topic-a)
                                           (k/merge (k/kstream builder topic-b))
-                                          (k/to topic-c))))
+                                          (k/to! topic-c))))
           produce-a (mock/producer driver topic-a)
           produce-b (mock/producer driver topic-b)]
 
@@ -378,7 +378,7 @@
                                                                    windows
                                                                    topic-a
                                                                    topic-b)
-                                            (k/to topic-c)))))
+                                            (k/to! topic-c)))))
           publish-a (partial mock/publish driver topic-a)
           publish-b (partial mock/publish driver topic-b)]
 
@@ -413,7 +413,7 @@
                                           (k/kstream topic-a)
                                           (k/select-key (fn [[k _v]]
                                                           (inc k)))
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1 1)
@@ -434,7 +434,7 @@
                                       (-> builder
                                           (k/kstream topic-a)
                                           (k/transform transformer-supplier-fn)
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1 1)
@@ -465,7 +465,7 @@
                                       (-> builder
                                           (k/kstream topic-a)
                                           (k/flat-transform transformer-supplier-fn)
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1 1)
@@ -495,7 +495,7 @@
                                       (-> builder
                                           (k/kstream topic-a)
                                           (k/transform-values transformer-supplier-fn)
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1 1)
@@ -526,7 +526,7 @@
                                       (-> builder
                                           (k/kstream topic-a)
                                           (k/flat-transform-values transformer-supplier-fn)
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1 1)
@@ -549,7 +549,7 @@
           driver (mock/build-driver (fn [builder]
                                       (-> builder
                                           (k/kstreams [topic-a topic-b])
-                                          (k/to topic-c))))
+                                          (k/to! topic-c))))
           publish (partial mock/publish driver)]
 
       (publish topic-a 1 1)
@@ -567,7 +567,7 @@
                                                   (k/filter (fn [[_k v]]
                                                               (not (zero? v))))
                                                   (k/to-kstream)
-                                                  (k/to topic-b))))]
+                                                  (k/to! topic-b))))]
         (let [publish (partial mock/publish driver topic-a)]
 
           (publish 1 2)
@@ -587,7 +587,7 @@
                                                   (k/filter-not (fn [[_k v]]
                                                                   (not (zero? v))))
                                                   (k/to-kstream)
-                                                  (k/to topic-b))))]
+                                                  (k/to! topic-b))))]
         (let [publish (partial mock/publish driver topic-a)]
 
           (publish 1 0)
@@ -607,7 +607,7 @@
                                                   (k/map-values (fn [v]
                                                                   (inc v)))
                                                   (k/to-kstream)
-                                                  (k/to topic-b))))]
+                                                  (k/to! topic-b))))]
         (let [publish (partial mock/publish driver topic-a)]
 
           (publish 1 0)
@@ -632,7 +632,7 @@
                                                               topic-a)
                                                   (k/count topic-b)
                                                   (k/to-kstream)
-                                                  (k/to topic-c))))]
+                                                  (k/to! topic-c))))]
         (let [publish (partial mock/publish driver topic-a)]
 
           (publish 1 0)
@@ -653,7 +653,7 @@
                                                     right (k/ktable builder topic-b)]
                                                 (-> (k/join left right +)
                                                     (k/to-kstream)
-                                                    (k/to topic-c)))))]
+                                                    (k/to! topic-c)))))]
         (let [publish-left (partial mock/publish driver topic-a)
               publish-right (partial mock/publish driver topic-b)]
 
@@ -677,7 +677,7 @@
                                                     right (k/ktable builder topic-b)]
                                                 (-> (k/outer-join left right safe-add)
                                                     (k/to-kstream)
-                                                    (k/to topic-c)))))]
+                                                    (k/to! topic-c)))))]
         (let [publish-left (partial mock/publish driver topic-a)
               publish-right (partial mock/publish driver topic-b)]
 
@@ -703,7 +703,7 @@
                                                     right (k/ktable builder topic-b)]
                                                 (-> (k/left-join left right safe-add)
                                                     (k/to-kstream)
-                                                    (k/to topic-c)))))]
+                                                    (k/to! topic-c)))))]
         (let [publish-left (partial mock/publish driver topic-a)
               publish-right (partial mock/publish driver topic-b)]
 
@@ -741,7 +741,7 @@
                                                   (k/suppress {})
                                                   (k/to-kstream)
                                                   (k/map (fn [[k v]] [(.key k) v]))
-                                                  (k/to topic-c))))]
+                                                  (k/to! topic-c))))]
 
         (let [publish (partial mock/publish driver topic-a)]
 
@@ -778,7 +778,7 @@
                                                   (k/suppress {:max-records max-records})
                                                   (k/to-kstream)
                                                   (k/map (fn [[k v]] [(.key k) v]))
-                                                  (k/to topic-c))))]
+                                                  (k/to! topic-c))))]
 
         (let [publish (partial mock/publish driver topic-a)]
 
@@ -816,7 +816,7 @@
                                                   (k/suppress {:max-records max-records})
                                                   (k/to-kstream)
                                                   (k/map (fn [[k v]] [(.key k) v]))
-                                                  (k/to topic-c))))]
+                                                  (k/to! topic-c))))]
 
         (let [publish (partial mock/publish driver topic-a)]
 
@@ -841,7 +841,7 @@
                                                   (k/count topic-a)
                                                   (k/suppress {:until-time-limit-ms 10})
                                                   (k/to-kstream)
-                                                  (k/to topic-b))))]
+                                                  (k/to! topic-b))))]
 
         (let [publish (partial mock/publish driver topic-a)]
 
@@ -868,7 +868,7 @@
                                                 (-> (k/left-join left right safe-add)
                                                     (k/suppress {:until-time-limit-ms 10})
                                                     (k/to-kstream)
-                                                    (k/to topic-c)))))]
+                                                    (k/to! topic-c)))))]
 
         (let [publish-left  (partial mock/publish driver topic-a)
               publish-right (partial mock/publish driver topic-b)]
@@ -894,7 +894,7 @@
                                           (k/group-by-key)
                                           (k/count topic-a)
                                           (k/to-kstream)
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1 1)
@@ -914,7 +914,7 @@
                                           (k/group-by (fn [[k _v]] (long (/ k 10))) topic-a)
                                           (k/reduce + topic-a)
                                           (k/to-kstream)
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1 1)
@@ -936,7 +936,7 @@
                                           (k/group-by (fn [[k _v]] (long (/ k 10))) topic-a)
                                           (k/reduce +)
                                           (k/to-kstream)
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1 1)
@@ -960,7 +960,7 @@
                                                        (fn [acc [_k v]] (+ acc v))
                                                        topic-a)
                                           (k/to-kstream)
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1 1)
@@ -986,7 +986,7 @@
                                                        (fn [acc [_k v]] (+ acc (:i v)))
                                                        topic-a)
                                           (k/to-kstream)
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)
           uuid-a #uuid "a8e310d7-f0d6-4f81-a474-aab5d6234149"
           uuid-b #uuid "0fb9ad92-dad8-45e7-9a87-7dcd9783076e"]
@@ -1010,7 +1010,7 @@
                                           (k/aggregate (constantly -10)
                                                        (fn [acc [_k v]] (+ acc v)))
                                           (k/to-kstream)
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1 1)
@@ -1042,7 +1042,7 @@
                                                      (let [[prev current] v]
                                                        [k (when (and prev current)
                                                             (- current prev))])))
-                                            (k/to topic-diffs)))))
+                                            (k/to! topic-diffs)))))
           publish (partial mock/publish driver topic-in)]
 
       (publish 1 5)
@@ -1064,7 +1064,7 @@
                                           (k/reduce + topic-a)
                                           (k/to-kstream)
                                           (k/map (fn [[k v]] [(.key k) v]))
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1000 1 1)
@@ -1088,7 +1088,7 @@
                                           (k/reduce + topic-a)
                                           (k/to-kstream)
                                           (k/map (fn [[k v]] [(.key k) v]))
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1000 "a" 1)
@@ -1112,7 +1112,7 @@
                                           (k/reduce + topic-a)
                                           (k/to-kstream)
                                           (k/map (fn [[k v]] [(.key k) v]))
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish 1000 1 1)
@@ -1145,7 +1145,7 @@
                                                        topic-a)
                                           (k/to-kstream)
                                           (k/map (fn [[k v]] [(.key k) v]))
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)]
 
       (publish  100 1 4)
@@ -1179,7 +1179,7 @@
                                                                (fn [acc [_k v]] (- acc v))
                                                                topic-b)
                                                   (k/to-kstream)
-                                                  (k/to topic-b))))]
+                                                  (k/to! topic-b))))]
         (let [publish (partial mock/publish driver topic-a)]
 
           (publish 1 1)
@@ -1207,7 +1207,7 @@
                                                        (fn [acc [_k v]] (- acc (:i v)))
                                                        topic-b)
                                           (k/to-kstream)
-                                          (k/to topic-b))))
+                                          (k/to! topic-b))))
           publish (partial mock/publish driver topic-a)
           uuid-a #uuid "a8e310d7-f0d6-4f81-a474-aab5d6234149"
           uuid-b #uuid "0fb9ad92-dad8-45e7-9a87-7dcd9783076e"]
@@ -1235,7 +1235,7 @@
                                                                (fn [acc [_k v]] (+ acc v))
                                                                (fn [acc [_k v]] (- acc v)))
                                                   (k/to-kstream)
-                                                  (k/to topic-b))))]
+                                                  (k/to! topic-b))))]
         (let [publish (partial mock/publish driver topic-a)]
 
           (publish 1 1)
@@ -1262,7 +1262,7 @@
                                                               topic-a)
                                                   (k/count topic-b)
                                                   (k/to-kstream)
-                                                  (k/to topic-c))))]
+                                                  (k/to! topic-c))))]
         (let [publish (partial mock/publish driver topic-a)]
 
           (publish 1 0)
@@ -1284,7 +1284,7 @@
                                                               topic-a)
                                                   (k/reduce + - topic-b)
                                                   (k/to-kstream)
-                                                  (k/to topic-b))))]
+                                                  (k/to! topic-b))))]
         (let [publish (partial mock/publish driver topic-a)]
 
           (publish 1 1)
@@ -1310,7 +1310,7 @@
                                                               topic-a)
                                                   (k/reduce + -)
                                                   (k/to-kstream)
-                                                  (k/to topic-b))))]
+                                                  (k/to! topic-b))))]
         (let [publish (partial mock/publish driver topic-a)]
 
           (publish 1 1)
@@ -1339,7 +1339,7 @@
                                                                    (fn [[k _v]]
                                                                      k)
                                                                    +)
-                                                    (k/to topic-c)))))]
+                                                    (k/to! topic-c)))))]
         (let [publish-stream (partial mock/publish driver topic-a)
               publish-table (partial mock/publish driver topic-b)]
 
@@ -1362,7 +1362,7 @@
                                                                         (fn [[k _v]]
                                                                           k)
                                                                         safe-add)
-                                                    (k/to topic-c)))))]
+                                                    (k/to! topic-c)))))]
         (let [publish-stream (partial mock/publish driver topic-a)
               publish-table (partial mock/publish driver topic-b)]
 
@@ -1387,7 +1387,7 @@
                                      (fn [ctx v]
                                        {:new-val (+ (:val v) 1)
                                         :topic (.topic ctx)})))
-                                 (k/to output-t))))]
+                                 (k/to! output-t))))]
         (let [publisher (partial mock/publish driver input-t)]
           
           (publisher 100 {:val 10})
@@ -1419,7 +1419,7 @@
                                          (.put store k new-val) 
                                          (key-value [k new-val]))))
                                    ["test-store"])
-                                 (k/to output-t))))]
+                                 (k/to! output-t))))]
         (let [publisher (partial mock/publish driver input-t)]
           
           (publisher 1 1)

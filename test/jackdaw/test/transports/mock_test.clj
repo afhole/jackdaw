@@ -39,7 +39,7 @@
     (let [in (-> (k/kstream builder in)
                  (k/map (fn [[k v]]
                           [k v])))]
-      (k/to in out)
+      (k/to! in out)
       builder)))
 
 (defn test-driver

@@ -27,7 +27,7 @@
 (def client-impl
   {:alter-topics* (fn [this topics]
                     (d/future
-                      @(.all (.alterConfigs ^AdminClient this topics))))
+                      @(.all (.incrementalAlterConfigs ^AdminClient this topics))))
    :create-topics* (fn [this topics]
                     (d/future
                       @(.all (.createTopics ^AdminClient this topics))))

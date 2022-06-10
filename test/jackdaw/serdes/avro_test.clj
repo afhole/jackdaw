@@ -160,7 +160,7 @@
                                      :namespace "com.fundingcircle"})
           schema-type (schema-type avro-schema)
           clj-data 4
-          avro-data (Integer. 4)]
+          avro-data (Integer/valueOf 4)]
       (is (= clj-data (avro/avro->clj schema-type avro-data)))
       (is (= avro-data (avro/clj->avro schema-type clj-data [])))
 

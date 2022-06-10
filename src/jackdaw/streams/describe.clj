@@ -38,7 +38,7 @@
   (base-node :node n))
 
 (defmethod describe-node :source [n]
-  (let [topics (map str/trim (-> (.topics ^TopologyDescription$Source n)
+  (let [topics (map str/trim (-> (.topicSet ^TopologyDescription$Source n)
                                  (str/replace "[" "")
                                  (str/replace "]" "")
                                  (str/split #",")))]

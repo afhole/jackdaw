@@ -180,7 +180,7 @@
   of datafied messages."
   [^Consumer consumer timeout]
   (some->> (if (int? timeout)
-             (.poll consumer ^long timeout)
+             (.poll consumer (Duration/ofMillis timeout))
              (.poll consumer ^Duration timeout))
            (map jd/datafy)))
 

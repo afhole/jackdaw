@@ -25,7 +25,7 @@
 (defspec edn-print-length-test 20
   (testing "EDN data is the same after serialization and deserialization with *print-length*."
     (binding [*print-length* 100]
-      (prop/for-all [x (gen/vector gen/int (inc *print-length*))]
+      (prop/for-all [x (gen/vector gen/small-integer (inc *print-length*))]
         (is (= x (->> (.serialize (jse/edn-serializer) nil x)
                       (.deserialize (jse/edn-deserializer) nil))))))))
 
