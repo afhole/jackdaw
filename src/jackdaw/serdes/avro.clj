@@ -559,9 +559,12 @@
                                 (.close base-deserializer))
                  :configure   (fn [_ config key?]
                                 (.configure base-deserializer config key?))
-                 :deserialize (fn [_ topic raw-data]
+                 :deserialize (fn [_ topic raw-data-bytes]
                                 (try
-                                  (let [avro-data (if (get deserializer-config "specific.avro.reader")
+                                  (let [raw-data (if (empty? raw-data-bytes)
+                                                   nil
+                                                   raw-data-bytes)
+                                        avro-data (if (get deserializer-config "specific.avro.reader")
                                                     (.deserialize base-deserializer ^String topic #^bytes raw-data ^Schema avro-schema)
                                                     (.deserialize base-deserializer ^String topic #^bytes raw-data))]
                                     ;; Note that `.deserialize` will return EITHER a Java Object, or
